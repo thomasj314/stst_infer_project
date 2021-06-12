@@ -1,0 +1,102 @@
+---
+title: "What Influences ToothGrowth"
+author: "Thomas Jo"
+date: '2021 6 12 '
+output: html_document
+---
+
+**First**  We have to load the dataset **"ToothGrowth"**.
+
+
+```{r echo=TRUE}
+library(datasets)
+library(ggplot2)
+
+data("ToothGrowth")
+```
+
+Let's see the inside of ToothGrowth Dataset.
+
+```{r echo=TRUE}
+str(ToothGrowth)
+```
+
+We notice there are 60 observations and 3 variables in the dataset. Let's use other functions to search more information.
+
+
+- **Summary function**
+
+
+```{r echo=TRUE}
+summary(ToothGrowth)
+```
+There are 2 levels of factor in supp, it's **OJ** AND **VC**, each has 30 observations. 
+
+
+- **Unique function**
+
+
+```{r echo=TRUE}
+unique(ToothGrowth$dose)
+```
+
+We notice that they only took 0.5, l.0, 2.0 doses in this measurement. 
+
+So far we found enough information to analyze the ToothGrowth Dataset. 
+
+
+### **1. Differences between two Supplements**
+
+
+```{r echo=TRUE}
+ ggplot(ToothGrowth,aes(supp,len)) + geom_boxplot(aes(fill=supp)) + xlab("Supplement")+ ylab("Tooth length")
+```
+
+
+### **2. Differences from the amount of doses**
+ 
+ 
+```{r echo=TRUE}
+g <- ggplot(ToothGrowth,aes(x=factor(dose),y=len)) + geom_boxplot(aes(fill=factor(dose))) + 
+  xlab("Doses")+ylab("Tooth length")
+
+g + labs(title="Relationship between Tooth length and the amount of doses")
+
+```
+
+We can see that the increase of Dosage influence the Tooth Length.
+
+
+
+### **3. Confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose**
+ 
+ - **.5 Dose** 
+ 
+```{r echo=TRUE}
+t.test(len~supp,ToothGrowth[ToothGrowth$dose == .5,])
+```
+
+
+ - **1.0 Dose**
+
+```{r echo=TRUE}
+t.test(len~supp,ToothGrowth[ToothGrowth$dose == 1,])
+```
+
+
+
+
+
+ - **2.0 Dose**
+
+```{r echo=TRUE}
+t.test(len~supp,ToothGrowth[ToothGrowth$dose == 2,])
+```
+
+
+
+### **4. Conclusion**
+ 
+ Only the usage of 2.0 dose fails to reject the null hypothesis. Other dosage of T-test P-value are less than 0.5, .5 dose P-value is **0.006359** and 1.0 dose P-value is **0.001038**. But the 2.0 dose's p-value is **0.9639**.
+ 
+It means that using .5 dose and 1.0 dose of the supplement makes a significant difference between the group **OJ** AND **VC**. But when the dosage increases up to 2.0, there was no significant difference between group **OJ** AND **VC**. That is why they failed to reject the null hypothesis.
